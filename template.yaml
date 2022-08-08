@@ -1,0 +1,37 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: send-value-to-zabbix.lambda_handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 20
+      CodeUri: src/
+      VpcConfig:
+        SubnetIds:
+          - !ImportValue VPC-PrivateSubnetIdDHCPA
+          - !ImportValue VPC-PrivateSubnetIdDHCPC
+          - !ImportValue VPC-PrivateSubnetIdDHCPD
+        SecurityGroupIds:
+          - !Ref SG
+  SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !ImportValue VPC-Id
+      GroupName: !Sub SG-Lambda-Send-Value-to-Zabbix
+      GroupDescription: !Sub SG-Lambda-Send-Value-to-Zabbix
+
+  Logs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Function}
+      RetentionInDays: 7
+
+Outputs:
+  SG:
+    Value: !Ref SG
+    Export:
+      Name: Lambda-Send-Value-to-Zabbix-SG
