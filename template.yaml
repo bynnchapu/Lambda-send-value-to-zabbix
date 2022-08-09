@@ -10,6 +10,9 @@ Resources:
       MemorySize: 128
       Timeout: 20
       CodeUri: src/
+      Environment:
+        Variables:
+          ZABBIX_SERVER_HOST: zabbix-server.aws.tencho-lab.net
       VpcConfig:
         SubnetIds:
           - !ImportValue VPC-PrivateSubnetIdDHCPA
