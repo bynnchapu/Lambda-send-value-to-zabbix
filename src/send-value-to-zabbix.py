@@ -35,6 +35,9 @@ def send_metric_data(zabbix_data):
 
 
 def lambda_handler(event, context):
+    print('=== Input DATA ===')
+    pritn(json.dumps(event))
+
     zabbix_data = {
         'target_host': event['target_host'],
         'target_key': event['target_key'],
@@ -42,10 +45,12 @@ def lambda_handler(event, context):
 
     }
     result = send_metric_data(zabbix_data)
-
     status_code = 200 if result['failed'] == 0 else 500
-
-    return {
+    return_data = {
         'statusCode': status_code,
         'result': json.dumps(result)
     }
+    
+    print('=== Output DATA ===')
+    print(json.dumps(return_data))
+    return return_data
