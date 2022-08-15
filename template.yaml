@@ -34,6 +34,10 @@ Resources:
       RetentionInDays: 7
 
 Outputs:
+  ARN:
+    Value: !GetAtt Function.Arn
+    Export:
+      Name: Lambda-Send-Value-to-Zabbix-ARN
   SG:
     Value: !Ref SG
     Export:
