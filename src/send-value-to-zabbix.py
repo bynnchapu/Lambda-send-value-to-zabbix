@@ -36,7 +36,7 @@ def send_metric_data(zabbix_data):
 
 def lambda_handler(event, context):
     print('=== Input DATA ===')
-    pritn(json.dumps(event))
+    print(json.dumps(event))
 
     zabbix_data = {
         'target_host': event['target_host'],
