@@ -1,4 +1,3 @@
-import json
 import os
 from pyzabbix import ZabbixMetric, ZabbixSender
 
@@ -13,7 +12,7 @@ def send_metric_data(zabbix_data):
         return result_info
 
     print('[Sending data]')
-    print(json.dumps(zabbix_data))
+    print(zabbix_data)
 
     send_data = []
     metric_data = ZabbixMetric(zabbix_data['target_host'],
@@ -26,31 +25,31 @@ def send_metric_data(zabbix_data):
     result_info = {
         'failed': result.failed,
         'total': result.total,
-        'time': float(result.time),
+        'time': result.time,
         'chunk': result.chunk
     }
     print('[Result data]')
-    print(json.dumps(result_info))
+    print(result_info)
     return result_info
 
 
 def lambda_handler(event, context):
     print('=== Input DATA ===')
-    print(json.dumps(event))
+    print(event)
 
     zabbix_data = {
-        'target_host': event['target_host'],
-        'target_key': event['target_key'],
-        'target_value': event['target_value']
+        'target_host': event['requestPayload']['target']['host'],
+        'target_key': event['requestPayload']['target']['key'],
+        'target_value': event['responsePayload']['value']
 
     }
     result = send_metric_data(zabbix_data)
     status_code = 200 if result['failed'] == 0 else 500
     return_data = {
         'statusCode': status_code,
-        'result': json.dumps(result)
+        'result': result
     }
     
     print('=== Output DATA ===')
-    print(json.dumps(return_data))
+    print(return_data)
     return return_data
